@@ -192,34 +192,32 @@ $(document).ready(function() {
         return final;
     }
 
-    function setEnemyStats() {
-
+    function setEnemyStats(name, maxhp, speed, power, reward) {
+        enemy.name = name;
+        enemy.maxHp = setEnemyHealth(maxhp);
+        enemy.currentHp = enemy.maxHp;
+        enemy.speed = speed;
+        enemy.power = power;
+        enemy.reward = reward;
     }
 
     $("#startEasy").click(function() {
-        enemy.name = "Easy";
-        enemy.maxHp = setEnemyHealth(100);
-        enemy.currentHp = enemy.maxHp;
-        enemy.speed = 15 + player.level;
-        enemy.power = 10;
+        setEnemyStats("Easy", 100, 15 + player.level, 10, 1)
         startCombat();
     })
 
     $("#startMedium").click(function() {
-        enemy.name = "Medium";
-        enemy.maxHp = setEnemyHealth(150);
-        enemy.currentHp = enemy.maxHp;
-        enemy.speed = Math.floor(20 + (player.level * 1.3));
-        enemy.power = 12;
+        setEnemyStats("Medium", 125, 17 + player.level, 20, 2)
         startCombat();
     })
 
     $("#startHard").click(function() {
-        enemy.name = "Hard";
-        enemy.maxHp = setEnemyHealth(200);
-        enemy.currentHp = enemy.maxHp;
-        enemy.speed = Math.floor(25 + (player.level * 1.8));
-        enemy.power = 15;
+        setEnemyStats("Hard", 150, 20 + player.level, 30, 3)
+        startCombat();
+    })
+
+    $("#startBoss").click(function() {
+        setEnemyStats("Omza", 25000, 100 + player.level, 100, 5)
         startCombat();
     })
 
@@ -229,7 +227,7 @@ $(document).ready(function() {
         playerAttack();
         // Checks if enemy HP is below 0 and ends combat
         if (areYouDead(enemy.currentHp)) {
-            printResults("#enemyHealth", 2, player)
+            printResults("#enemyHealth", enemy.reward, player)
             return;
         }
 
@@ -239,7 +237,7 @@ $(document).ready(function() {
             enemyAttack();
             if (areYouDead(player.currentHp)) {
                 $("#attackButton").attr("disabled", true);
-                printResults("#playerHealth", 1, enemy)
+                printResults("#playerHealth", enemy.reward / 2, enemy)
                 return;
             }
         }, 1000);
@@ -249,8 +247,8 @@ $(document).ready(function() {
 
     function printResults(x, y, z) {
         $(x).html(0);
-        earnGold(enemy.maxHp * y);
-        earnXp(enemy.maxHp * y);
+        earnGold(y);
+        earnXp(y);
         $("#winnerResult").html(z.name + " Wins!");
         setTimeout(function() {
             resetCombat()
@@ -258,14 +256,16 @@ $(document).ready(function() {
     }
 
     function earnGold(g) {
-        g += g / 10;
-        let gBase = getRange(getDiceRoll(g + 10), g + 25);
+        let base = g * 100
+        let gBase = getRange(getDiceRoll(base + 10), base + 25);
         player.gold += gBase;
         $("#goldResult").html("Earnt " + gBase + " Gold!");
     }
 
     function earnXp(x) {
-        let xBase = getRange(getDiceRoll(x + 15), x + 30);
+        let base = x * 100;
+        let mod = getDiceRoll(base)
+        let xBase = getRange(getDiceRoll(base + 15), base + 30) + mod;
         player.xp += xBase;
         $("#xpResult").html("Earnt " + xBase + " XP!");
     }
@@ -379,6 +379,7 @@ $(document).ready(function() {
         var saveCheck = confirm("Saving will overwrite " + player.name + "'s save, press OK to confirm");
         if (saveCheck == true) {
             save();
+            alert("Game Saved!");
         } else {
             alert("Game not saved");
         }
@@ -388,7 +389,6 @@ $(document).ready(function() {
         let loadTester = JSON.parse(localStorage.getItem("save"));
         console.log(loadTester);
         if (loadTester === null) {
-
             $(".load").css("display", "none");
         }
     }
@@ -413,6 +413,7 @@ $(document).ready(function() {
                 $(".stat-nav").fadeIn("slow");
                 $(".save").fadeIn("slow");
             }, 1000);
+            alert("Game loaded");
 
         } else {
             alert("Game not loaded");
@@ -429,6 +430,7 @@ $(document).ready(function() {
             setTimeout(function() {
                 $(".name").fadeIn("slow");
             }, 1000)
+            alert("Game deleted");
         } else {
             alert("Game not deleted");
 
