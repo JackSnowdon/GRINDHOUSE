@@ -79,6 +79,7 @@ $(document).ready(function() {
             $(".combat").fadeIn("slow");
         }, 1000);
         $("#attackButton").attr("disabled", false);
+        $("#healButton").attr("disabled", false);
     }
 
     function doesAttackHit(a, d) {
@@ -243,6 +244,23 @@ $(document).ready(function() {
         }, 1000);
     })
 
+    $("#healButton").click(function() {
+        $("#healButton").attr("disabled", true);
+        let healDmg = standardHeal(player);
+        player.currentHp += healDmg;
+        if (player.currentHp >= player.maxHp) {
+            player.currentHp = player.maxHp;
+        }
+        $("#playerHealth").html(player.currentHp);
+        $("#playerHitResult").html(player.name + " Heals self for " + healDmg + " Hit Points!");
+    })
+
+    function standardHeal(user) {
+        let base = user.maxHp / 3;
+        let final = getDiceRoll(base) + base;
+        return final;
+    }
+
     // Combat Rewards
 
     function printResults(x, y, z) {
@@ -318,8 +336,10 @@ $(document).ready(function() {
     })
 
     function setUpgradeAmount(a, t) {
-        let base = Math.floor(a * 12);
-        $(t).text(base);
+        let base = a * 10;
+        let mod = Math.floor(base / 3);
+        let final = mod + base;
+        $(t).text(final);
     }
 
     $("#leaveShop").click(function() {
