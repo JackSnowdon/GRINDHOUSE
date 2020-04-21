@@ -50,3 +50,9 @@
     display: inline-block;
     width: 100%;
 }
+
+@media (max-width: 545px) {
+    .display-stat {
+        font-size: 15px;
+    }
+}
