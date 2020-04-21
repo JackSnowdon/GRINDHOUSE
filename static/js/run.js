@@ -25,10 +25,8 @@ $(document).ready(function() {
 
     // Setup Functions
 
-    function setPlayerStats(x) {
+    function setPlayerStats() {
         $("#playerName").text(player.name);
-        player.currentHp = x;
-        player.maxHp = x;
         $("#playerHealth").text(player.currentHp);
         $("#playerMaxHp").text(player.maxHp);
         $("#playerGold").text(player.gold);
@@ -76,6 +74,7 @@ $(document).ready(function() {
         $("#enemyName").text(enemy.name);
         $("#enemyHealth").text(enemy.currentHp);
         $("#enemyMaxHp").text(enemy.maxHp);
+        $(".save").fadeOut("slow");
         setTimeout(function() {
             $(".combat").fadeIn("slow");
         }, 1000);
@@ -159,6 +158,7 @@ $(document).ready(function() {
         $("#playerCrit").empty()
         setTimeout(function() {
             $(".buttons").fadeIn("slow");
+            $(".save").fadeIn("slow");
         }, 1500)
     }
 
@@ -168,6 +168,7 @@ $(document).ready(function() {
         // Checks name has value (Trimmed in case of whitespace)
         var playerName = $("#player-name").val();
         $(".name").fadeOut("slow");
+        $(".load").fadeOut("slow");
         if ($.trim(playerName) == '') {
             alert('You surely must have a name!');
             $(".name").fadeIn("slow");
@@ -175,8 +176,9 @@ $(document).ready(function() {
             player.name = playerName;
         }
         if (typeof player.name !== "undefined") {
-            setPlayerStats(100);
+            setPlayerStats();
             setTimeout(function() {
+                $(".save").fadeIn("slow");
                 $(".buttons").fadeIn("slow");
                 $(".stat-nav").fadeIn("slow");
             }, 1000);
@@ -368,7 +370,7 @@ $(document).ready(function() {
 
     // Save System
 
-    $("#save-button").click(function() {
+    $("#saveButton").click(function() {
 
         // Confirms if player wants to save progress
 
@@ -380,7 +382,18 @@ $(document).ready(function() {
         }
     });
 
-    $("#load-button").click(function() {
+    function checkSave() {
+        let loadTester = JSON.parse(localStorage.getItem("save"));
+        console.log(loadTester);
+        if (loadTester === null) {
+
+            $(".load").css("display", "none");
+        }
+    }
+
+    checkSave();
+
+    $("#loadButton").click(function() {
 
         // Confirms player wants to load local save
 
@@ -389,10 +402,37 @@ $(document).ready(function() {
             load();
 
             // Loads from local storage and sets player stats
+
+            setPlayerStats();
+            $(".name").fadeOut("slow");
+            $(".load").fadeOut("slow");
+            setTimeout(function() {
+                $(".buttons").fadeIn("slow");
+                $(".stat-nav").fadeIn("slow");
+                $(".save").fadeIn("slow");
+            }, 1000);
+
         } else {
             alert("Game not loaded");
         }
     });
+
+    $("#deleteButton").click(function() {
+        var deleteCheck = confirm("Delete your save file?");
+        if (deleteCheck == true) {
+            clearSave();
+            $(".buttons").fadeOut("slow");
+            $(".stat-nav").fadeOut("slow");
+            $(".save").fadeOut("slow");
+            setTimeout(function() {
+                $(".name").fadeIn("slow");
+            }, 1000)
+        } else {
+            alert("Game not deleted");
+
+        }
+
+    })
 
     function save() {
 
@@ -400,8 +440,13 @@ $(document).ready(function() {
 
         var save = {
             playerPower: player.power,
-            playerHp: player.maxHp,
-
+            playerMaxHp: player.maxHp,
+            playerCurrentHp: player.currentHp,
+            playerSpeed: player.speed,
+            playerGold: player.gold,
+            playerXp: player.xp,
+            playerLevel: player.level,
+            playerName: player.name
         };
         localStorage.setItem("save", JSON.stringify(save));
     }
@@ -413,8 +458,19 @@ $(document).ready(function() {
         var saveGame = JSON.parse(localStorage.getItem("save"));
         if (saveGame != null && saveGame != undefined) {
             player.power = saveGame.playerPower;
-            player.maxHp = saveGame.playerHp;
+            player.maxHp = saveGame.playerMaxHp;
+            player.currentHp = saveGame.playerCurrentHp;
+            player.speed = saveGame.playerSpeed;
+            player.gold = saveGame.playerGold;
+            player.xp = saveGame.playerXp;
+            player.level = saveGame.playerLevel;
+            player.name = saveGame.playerName;
+
         }
+    }
+
+    function clearSave() {
+        localStorage.clear()
     }
 
 

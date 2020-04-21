@@ -38,7 +38,8 @@
 .stat-nav,
 .buttons,
 .shop,
-.training {
+.training,
+.save {
     display: none;
 }
 
