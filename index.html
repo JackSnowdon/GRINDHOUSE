@@ -53,14 +53,9 @@
                 </div>
             </section>
 
-            <section id="stats">
+            <section class="stats">
                 <div class="stat-nav">
                     <div class="row text-center">
-                        <div class="col-12">
-                            <h5 id="winnerResult"></h5>
-                            <h5 id="goldResult"></h5>
-                            <h5 id="xpResult"></h5>
-                        </div>
                         <div class="col-4 col-md-2">
                             <p class="display-stat">Name: <span id="playerName"></span> - <span id="playerLevel"></span></p>
                         </div>
@@ -110,6 +105,11 @@
 
             <section class="combat">
                 <div class="row text-center">
+                    <div class="col-12 mb-3">
+                        <button class="btn btn-success" id="attackButton">Attack</button>
+                    </div>
+                </div>
+                <div class="row text-center">
                     <div class="col-12">
                         <h5>Enemy: <span id="enemyName"></span></h5>
                         <p>Enemy Health: <span id="enemyHealth"></span>/<span id="enemyMaxHp"></span></p>
@@ -125,11 +125,6 @@
                         </h4>
                         <h5 id="enemyHitResult">
                         </h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <button class="btn btn-success" id="attackButton">Attack</button>
                     </div>
                 </div>
             </section>
@@ -180,6 +175,16 @@
                 <div class="row">
                     <div class="col-12">
                         <button class="btn btn-success" id="loadButton">Load Game!</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results mt-3">
+                <div class="row text-center">
+                    <div class="col-12">
+                        <h5 id="winnerResult"></h5>
+                        <h5 id="goldResult"></h5>
+                        <h5 id="xpResult"></h5>
                     </div>
                 </div>
             </section>

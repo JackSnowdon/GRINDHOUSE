@@ -192,6 +192,10 @@ $(document).ready(function() {
         return final;
     }
 
+    function setEnemyStats() {
+
+    }
+
     $("#startEasy").click(function() {
         enemy.name = "Easy";
         enemy.maxHp = setEnemyHealth(100);
@@ -219,7 +223,39 @@ $(document).ready(function() {
         startCombat();
     })
 
+    // Player Attack
+
+    $("#attackButton").click(function() {
+        playerAttack();
+        // Checks if enemy HP is below 0 and ends combat
+        if (areYouDead(enemy.currentHp)) {
+            printResults("#enemyHealth", 2, player)
+            return;
+        }
+
+        // Enemy Attack
+
+        setTimeout(function() {
+            enemyAttack();
+            if (areYouDead(player.currentHp)) {
+                $("#attackButton").attr("disabled", true);
+                printResults("#playerHealth", 1, enemy)
+                return;
+            }
+        }, 1000);
+    })
+
     // Combat Rewards
+
+    function printResults(x, y, z) {
+        $(x).html(0);
+        earnGold(enemy.maxHp * y);
+        earnXp(enemy.maxHp * y);
+        $("#winnerResult").html(z.name + " Wins!");
+        setTimeout(function() {
+            resetCombat()
+        }, 1500)
+    }
 
     function earnGold(g) {
         g += g / 10;
@@ -233,40 +269,6 @@ $(document).ready(function() {
         player.xp += xBase;
         $("#xpResult").html("Earnt " + xBase + " XP!");
     }
-
-    // Player Attack
-
-    $("#attackButton").click(function() {
-        playerAttack();
-        // Checks if enemy HP is below 0 and ends combat
-        if (areYouDead(enemy.currentHp)) {
-            $("#enemyHealth").html(0);
-            earnGold(enemy.maxHp);
-            earnXp(enemy.maxHp);
-            $("#winnerResult").html(player.name + " Wins!");
-            setTimeout(function() {
-                resetCombat();
-            }, 1500);
-            return;
-        }
-
-        // Enemy Attack
-
-        setTimeout(function() {
-            enemyAttack();
-            if (areYouDead(player.currentHp)) {
-                $("#attackButton").attr("disabled", true);
-                $("#playerHealth").html(0);
-                earnGold(enemy.maxHp / 2);
-                earnXp(enemy.maxHp / 2);
-                $("#winnerResult").html(enemy.name + " Wins!");
-                setTimeout(function() {
-                    resetCombat()
-                }, 1500)
-                return;
-            }
-        }, 1000);
-    })
 
     // Die
 
