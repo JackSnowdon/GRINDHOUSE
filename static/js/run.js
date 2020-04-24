@@ -9,10 +9,10 @@ $(document).ready(function() {
     var player = new Object();
     player.maxHp = 100;
     player.currentHp = 100;
-    player.power = 12;
-    player.speed = 20;
+    player.power = 10;
+    player.speed = 10;
     player.gold = 500;
-    player.xp = 5000;
+    player.xp = 500;
     player.level = 1;
 
     // Enemy Object
@@ -67,21 +67,6 @@ $(document).ready(function() {
         return aDmg
     }
 
-    function startCombat() {
-        emptyResults()
-        $("#hitresults").show();
-        $(".buttons").fadeOut("slow");
-        $("#enemyName").text(enemy.name);
-        $("#enemyHealth").text(enemy.currentHp);
-        $("#enemyMaxHp").text(enemy.maxHp);
-        $(".save").fadeOut("slow");
-        setTimeout(function() {
-            $(".combat").fadeIn("slow");
-        }, 1000);
-        $("#attackButton").attr("disabled", false);
-        $("#healButton").attr("disabled", false);
-    }
-
     function doesAttackHit(a, d) {
         let aSpeed = (getDiceRoll(a.speed) + a.speed)
         let dSpeed = (getDiceRoll(d.speed) + getDiceRoll(d.speed))
@@ -90,6 +75,32 @@ $(document).ready(function() {
         } else {
             return false;
         }
+    }
+
+    function startCombat() {
+        emptyResults()
+        $("#hitresults").show();
+        $(".buttons").fadeOut("slow");
+        $("#enemyName").text(enemy.name);
+        $("#enemyHealth").text(enemy.currentHp);
+        $("#enemyMaxHp").text(enemy.maxHp);
+        $(".save").fadeOut("slow");
+        $("#attackButton").attr("disabled", false);
+        $("#healButton").attr("disabled", false);
+        player.heals = healAmountChecker(player);
+        setTimeout(function() {
+            $(".combat").fadeIn("slow");
+        }, 1000);
+        if (player.level < 3) {
+            $("#healButton").hide();
+            console.log("hit");
+        } else {
+            $("#healButton").show();
+        }
+    }
+
+    function healAmountChecker(user) {
+        return Math.floor(user.level / 3);
     }
 
     function playerAttack() {
@@ -137,6 +148,10 @@ $(document).ready(function() {
             $("#enemyHitResult").html(enemy.name + " Misses " + player.name);
         }
         $("#attackButton").attr("disabled", false);
+        while (player.heals > 0) {
+            $("#healButton").attr("disabled", false);
+            return;
+        }
     }
 
     // Endgame checker
@@ -245,7 +260,10 @@ $(document).ready(function() {
     })
 
     $("#healButton").click(function() {
+        player.heals--;
+        alert(player.heals + " Heals Left!")
         $("#healButton").attr("disabled", true);
+        $("#attackButton").attr("disabled", true);
         let healDmg = standardHeal(player);
         player.currentHp += healDmg;
         if (player.currentHp >= player.maxHp) {
@@ -253,11 +271,20 @@ $(document).ready(function() {
         }
         $("#playerHealth").html(player.currentHp);
         $("#playerHitResult").html(player.name + " Heals self for " + healDmg + " Hit Points!");
+
+        setTimeout(function() {
+            enemyAttack();
+            if (areYouDead(player.currentHp)) {
+                $("#attackButton").attr("disabled", true);
+                printResults("#playerHealth", enemy.reward / 2, enemy)
+                return;
+            }
+        }, 1000);
     })
 
     function standardHeal(user) {
         let base = user.maxHp / 3;
-        let final = getDiceRoll(base) + base;
+        let final = Math.floor(getDiceRoll(base) + base);
         return final;
     }
 
@@ -365,7 +392,7 @@ $(document).ready(function() {
         if (player.xp >= levelAmount) {
             player.xp -= levelAmount;
             player.level += 1;
-            player.maxHp += 10;
+            player.maxHp += 15;
             player.currentHp = player.maxHp;
             $("#playerHealth").text(player.currentHp);
             $("#playerMaxHp").text(player.maxHp);
@@ -373,13 +400,16 @@ $(document).ready(function() {
             $("#playerLevel").text(player.level);
             setLevelUpAmount(player.level, "#levelUpgrade");
             alert("Leveled Up!");
+            if (player.level === 3) {
+                alert("Unlocked Heal");
+            }
         } else {
             alert("You dont have enough XP! You need " + levelAmount + "xp to Level Up!");
         }
     })
 
     function setLevelUpAmount(l, t) {
-        let base = Math.floor(1.1 * (l * 1000));
+        let base = Math.floor(1.125 * (l * 1000));
         $(t).text(base);
     }
 
@@ -407,7 +437,6 @@ $(document).ready(function() {
 
     function checkSave() {
         let loadTester = JSON.parse(localStorage.getItem("save"));
-        console.log(loadTester);
         if (loadTester === null) {
             $(".load").css("display", "none");
         }
