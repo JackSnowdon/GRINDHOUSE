@@ -14,6 +14,7 @@ $(document).ready(function() {
     player.gold = 500;
     player.xp = 500;
     player.level = 1;
+    player.autoDeath = false;
 
     // Enemy Object
 
@@ -27,6 +28,7 @@ $(document).ready(function() {
 
     function setPlayerStats() {
         $("#playerName").text(player.name);
+        player.currentHp = player.maxHp
         $("#playerHealth").text(player.currentHp);
         $("#playerMaxHp").text(player.maxHp);
         $("#playerGold").text(player.gold);
@@ -34,6 +36,7 @@ $(document).ready(function() {
         $("#playerPower").text(player.power);
         $("#playerSpeed").text(player.speed);
         $("#playerLevel").text(player.level);
+        player.autoDeath = false;
     }
 
     function emptyResults() {
@@ -93,7 +96,6 @@ $(document).ready(function() {
         }, 1000);
         if (player.level < 3) {
             $("#healButton").hide();
-            console.log("hit");
         } else {
             $("#healButton").show();
         }
@@ -188,6 +190,7 @@ $(document).ready(function() {
         if ($.trim(playerName) == '') {
             alert('You surely must have a name!');
             $(".name").fadeIn("slow");
+            $(".load").fadeIn("slow");
         } else {
             player.name = playerName;
         }
@@ -218,12 +221,12 @@ $(document).ready(function() {
     }
 
     $("#startEasy").click(function() {
-        setEnemyStats("Easy", 100, 15 + player.level, 10, 1)
+        setEnemyStats("Easy", 50, 15 + player.level, 10, 1)
         startCombat();
     })
 
     $("#startMedium").click(function() {
-        setEnemyStats("Medium", 125, 17 + player.level, 20, 2)
+        setEnemyStats("Medium", 100, 17 + player.level, 20, 2)
         startCombat();
     })
 
@@ -237,13 +240,60 @@ $(document).ready(function() {
         startCombat();
     })
 
+    $("#autoDeathButton").click(function() {
+        if (player.autoDeath) {
+            player.autoDeath = false;
+            $("#autoDeathText").text("Turn on auto death for double or nothing!");
+            $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+            $("#enterShop").attr("disabled", false);
+            $("#enterTraining").attr("disabled", false);
+            $("#saveButton").attr("disabled", false);
+            autoDeathDebuff(player);
+        } else {
+            player.autoDeath = true;
+            $("#autoDeathText").text("Turn off auto death for double or nothing!");
+            $("#autoDeathButton").removeClass("btn-success").addClass("btn-danger");
+            $("#enterShop").attr("disabled", true);
+            $("#enterTraining").attr("disabled", true);
+            $("#saveButton").attr("disabled", true);
+            autoDeathBuff(player);
+        }
+    })
+
+    function autoDeathBuff(p) {
+        p.speed = p.speed * 2;
+        p.power = p.power * 2;
+        p.maxHp = p.maxHp * 2;
+        p.currentHp = p.maxHp;
+        setBuffStats();
+    }
+
+    function autoDeathDebuff(p) {
+        p.speed = p.speed / 2;
+        p.power = p.power / 2;
+        p.maxHp = p.maxHp / 2;
+        p.currentHp = p.maxHp;
+        setBuffStats();
+    }
+
+    function setBuffStats() {
+        $("#playerHealth").text(player.currentHp);
+        $("#playerMaxHp").text(player.maxHp);
+        $("#playerPower").text(player.power);
+        $("#playerSpeed").text(player.speed);
+    }
+
     // Player Attack
 
     $("#attackButton").click(function() {
         playerAttack();
         // Checks if enemy HP is below 0 and ends combat
         if (areYouDead(enemy.currentHp)) {
-            printResults("#enemyHealth", enemy.reward, player)
+            if (player.autoDeath) {
+                printResults("#enemyHealth", enemy.reward * 2, player)
+            } else {
+                printResults("#enemyHealth", enemy.reward, player)
+            }
             return;
         }
 
@@ -252,8 +302,25 @@ $(document).ready(function() {
         setTimeout(function() {
             enemyAttack();
             if (areYouDead(player.currentHp)) {
-                $("#attackButton").attr("disabled", true);
-                printResults("#playerHealth", enemy.reward / 2, enemy)
+                if (player.autoDeath === false) {
+                    $("#attackButton").attr("disabled", true);
+                    printResults("#playerHealth", enemy.reward / 2, enemy)
+                } else {
+                    $("#attackButton").attr("disabled", true);
+                    $("#healButton").attr("disabled", true);
+                    setTimeout(function() {
+                        clearSave();
+                        $(".combat").fadeOut("slow");
+                        $(".stat-nav").fadeOut("slow");
+                        setTimeout(function() {
+                            $(".name").fadeIn("slow");
+                            $("#autoDeathText").text("Turn on auto death for double or nothing!");
+                            $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+                        }, 1000)
+                        alert("Game Over!");
+                    }, 1500)
+
+                }
                 return;
             }
         }, 1000);
