@@ -4,7 +4,7 @@ window.localStorage;
 
 $(document).ready(function() {
 
-    // Player Object
+    // Player Object Base
 
     var player = new Object();
     player.maxHp = 100;
@@ -16,7 +16,7 @@ $(document).ready(function() {
     player.level = 1;
     player.autoDeath = false;
 
-    // Enemy Object
+    // Enemy Object Base
 
     var enemy = new Object();
     enemy.name = "Steve";
@@ -24,7 +24,29 @@ $(document).ready(function() {
     enemy.currentHp = 100;
     enemy.power = 10;
 
-    // Setup Functions
+    // Gameplay Flow
+
+    $("#name-sumbit").click(function() {
+        // Checks name has value (Trimmed in case of whitespace)
+        var playerName = $("#player-name").val();
+        $(".name").fadeOut("slow");
+        $(".load").fadeOut("slow");
+        if ($.trim(playerName) == '') {
+            alert('You surely must have a name!');
+            $(".name").fadeIn("slow");
+            $(".load").fadeIn("slow");
+        } else {
+            player.name = playerName;
+        }
+        if (typeof player.name !== "undefined") {
+            setPlayerStats();
+            setTimeout(function() {
+                $(".save").fadeIn("slow");
+                $(".buttons").fadeIn("slow");
+                $(".stat-nav").fadeIn("slow");
+            }, 1000);
+        }
+    });
 
     function setPlayerStats() {
         $("#playerName").text(player.name);
@@ -45,6 +67,27 @@ $(document).ready(function() {
         $("#enemyHitResult").empty();
         $("#goldResult").empty();
         $("#xpResult").empty();
+    }
+
+    function startCombat() {
+        emptyResults()
+        $("#hitresults").show();
+        $(".buttons").fadeOut("slow");
+        $("#enemyName").text(enemy.name);
+        $("#enemyHealth").text(enemy.currentHp);
+        $("#enemyMaxHp").text(enemy.maxHp);
+        $(".save").fadeOut("slow");
+        $("#attackButton").attr("disabled", false);
+        $("#healButton").attr("disabled", false);
+        player.heals = healAmountChecker(player);
+        setTimeout(function() {
+            $(".combat").fadeIn("slow");
+        }, 1000);
+        if (player.level < 3) {
+            $("#healButton").hide();
+        } else {
+            $("#healButton").show();
+        }
     }
 
     // Combat Functions
@@ -77,27 +120,6 @@ $(document).ready(function() {
             return true;
         } else {
             return false;
-        }
-    }
-
-    function startCombat() {
-        emptyResults()
-        $("#hitresults").show();
-        $(".buttons").fadeOut("slow");
-        $("#enemyName").text(enemy.name);
-        $("#enemyHealth").text(enemy.currentHp);
-        $("#enemyMaxHp").text(enemy.maxHp);
-        $(".save").fadeOut("slow");
-        $("#attackButton").attr("disabled", false);
-        $("#healButton").attr("disabled", false);
-        player.heals = healAmountChecker(player);
-        setTimeout(function() {
-            $(".combat").fadeIn("slow");
-        }, 1000);
-        if (player.level < 3) {
-            $("#healButton").hide();
-        } else {
-            $("#healButton").show();
         }
     }
 
@@ -155,54 +177,6 @@ $(document).ready(function() {
             return;
         }
     }
-
-    // Endgame checker
-
-    function areYouDead(hp) {
-        return hp <= 0;
-    }
-
-    // Restart 
-
-    function resetCombat() {
-        player.currentHp = player.maxHp;
-        $("#hitresults").fadeOut("slow");
-        $("#enemyHealth").html(enemy.maxHp);
-        $("#playerHealth").html(player.currentHp);
-        $("#playerGold").html(player.gold);
-        $("#playerXp").html(player.xp);
-        $(".combat").fadeOut("slow");
-        $("#enemyCrit").empty()
-        $("#playerCrit").empty()
-        setTimeout(function() {
-            $(".buttons").fadeIn("slow");
-            $(".save").fadeIn("slow");
-        }, 1500)
-    }
-
-    // Gameplay Flow
-
-    $("#name-sumbit").click(function() {
-        // Checks name has value (Trimmed in case of whitespace)
-        var playerName = $("#player-name").val();
-        $(".name").fadeOut("slow");
-        $(".load").fadeOut("slow");
-        if ($.trim(playerName) == '') {
-            alert('You surely must have a name!');
-            $(".name").fadeIn("slow");
-            $(".load").fadeIn("slow");
-        } else {
-            player.name = playerName;
-        }
-        if (typeof player.name !== "undefined") {
-            setPlayerStats();
-            setTimeout(function() {
-                $(".save").fadeIn("slow");
-                $(".buttons").fadeIn("slow");
-                $(".stat-nav").fadeIn("slow");
-            }, 1000);
-        }
-    });
 
     function setEnemyHealth(b) {
         let base = player.level * Math.floor(b / 10);
@@ -306,20 +280,7 @@ $(document).ready(function() {
                     $("#attackButton").attr("disabled", true);
                     printResults("#playerHealth", enemy.reward / 2, enemy)
                 } else {
-                    $("#attackButton").attr("disabled", true);
-                    $("#healButton").attr("disabled", true);
-                    setTimeout(function() {
-                        clearSave();
-                        $(".combat").fadeOut("slow");
-                        $(".stat-nav").fadeOut("slow");
-                        setTimeout(function() {
-                            $(".name").fadeIn("slow");
-                            $("#autoDeathText").text("Turn on auto death for double or nothing!");
-                            $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
-                        }, 1000)
-                        alert("Game Over!");
-                    }, 1500)
-
+                    resetAutoDeath()
                 }
                 return;
             }
@@ -342,8 +303,12 @@ $(document).ready(function() {
         setTimeout(function() {
             enemyAttack();
             if (areYouDead(player.currentHp)) {
-                $("#attackButton").attr("disabled", true);
-                printResults("#playerHealth", enemy.reward / 2, enemy)
+                if (player.autoDeath === false) {
+                    $("#attackButton").attr("disabled", true);
+                    printResults("#playerHealth", enemy.reward / 2, enemy)
+                } else {
+                    resetAutoDeath()
+                }
                 return;
             }
         }, 1000);
@@ -353,6 +318,12 @@ $(document).ready(function() {
         let base = user.maxHp / 3;
         let final = Math.floor(getDiceRoll(base) + base);
         return final;
+    }
+
+    // Endgame checker
+
+    function areYouDead(hp) {
+        return hp <= 0;
     }
 
     // Combat Rewards
@@ -380,6 +351,47 @@ $(document).ready(function() {
         let xBase = getRange(getDiceRoll(base + 15), base + 30) + mod;
         player.xp += xBase;
         $("#xpResult").html("Earnt " + xBase + " XP!");
+    }
+
+    // Restart 
+
+    function resetCombat() {
+        player.currentHp = player.maxHp;
+        $("#hitresults").fadeOut("slow");
+        $("#enemyHealth").html(enemy.maxHp);
+        $("#playerHealth").html(player.currentHp);
+        $("#playerGold").html(player.gold);
+        $("#playerXp").html(player.xp);
+        $(".combat").fadeOut("slow");
+        $("#enemyCrit").empty()
+        $("#playerCrit").empty()
+        setTimeout(function() {
+            $(".buttons").fadeIn("slow");
+            $(".save").fadeIn("slow");
+        }, 1500)
+    }
+
+    function resetAutoDeath() {
+        $("#attackButton").attr("disabled", true);
+        $("#healButton").attr("disabled", true);
+        setTimeout(function() {
+            clearSave();
+            $(".combat").fadeOut("slow");
+            $(".stat-nav").fadeOut("slow");
+            setTimeout(function() {
+                $(".name").fadeIn("slow");
+                $("#autoDeathText").text("Turn on auto death for double or nothing!");
+                $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+            }, 1000)
+            alert("Game Over!");
+        }, 1500)
+        player.maxHp = 100;
+        player.currentHp = 100;
+        player.power = 10;
+        player.speed = 10;
+        player.gold = 500;
+        player.xp = 500;
+        player.level = 1;
     }
 
     // Die
