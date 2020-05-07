@@ -216,6 +216,16 @@ $(document).ready(function() {
         startCombat();
     })
 
+    $("#level-sumbit").click(function() {
+        var enemyLevel = $("#enemy-level").val();
+        console.log(enemyLevel);
+        var hp = enemyLevel * 47;
+        var spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
+        var atk = getDiceRoll(enemyLevel * 10);
+        setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, enemyLevel);
+        startCombat();
+    })
+
     $("#autoDeathButton").click(function() {
         if (player.autoDeath) {
             player.autoDeath = false;

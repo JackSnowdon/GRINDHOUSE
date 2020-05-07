@@ -82,25 +82,36 @@
             </section>
 
             <section class="buttons">
-                <div class="row mb-5">
-                    <div class="col-12 text-center mb-3">
+                <div class="row mb-5 text-center">
+                    <div class="col-12 mb-3">
                         <h5 id="autoDeathText">Turn on auto death for double or nothing!</h5>
                         <button class="btn btn-success" id="autoDeathButton">Auto Death</button>
                     </div>
-                    <div class="col-12 text-center mb-3">
+                    <div class="col-12 mb-3">
                         <h4>Choose a Fight!</h4>
                     </div>
-                    <div class="col-3 text-center">
+                    <div class="col-4 col-md-2 mb-3">
                         <button class="btn btn-success" id="startEasy">Easy</button>
                     </div>
-                    <div class="col-3 text-center">
+                    <div class="col-4 col-md-2 mb-3">
                         <button class="btn btn-success" id="startMedium">Medium</button>
                     </div>
-                    <div class="col-3 text-center">
+                    <div class="col-4 col-md-2 mb-3">
                         <button class="btn btn-success" id="startHard">Hard</button>
                     </div>
-                    <div class="col-3 text-center">
+                    <div class="col-12 col-md-2 mb-3">
                         <button class="btn btn-danger" id="startBoss">Boss</button>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <h5>Or Set A Random Enemy Level!</h5>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="input-group mb-3">
+                            <input type="number" min="0" step="1" class="form-control" id="enemy-level" placeholder="Enemy Level">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" id="level-sumbit" type="button">Submit</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
