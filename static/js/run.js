@@ -15,6 +15,7 @@ $(document).ready(function() {
     player.xp = 500;
     player.level = 1;
     player.autoDeath = false;
+    player.kills = 0;
 
     // Enemy Object Base
 
@@ -58,6 +59,7 @@ $(document).ready(function() {
         $("#playerPower").text(player.power);
         $("#playerSpeed").text(player.speed);
         $("#playerLevel").text(player.level);
+        $("#playerKills").text(player.kills);
         player.autoDeath = false;
     }
 
@@ -200,12 +202,12 @@ $(document).ready(function() {
     })
 
     $("#startMedium").click(function() {
-        setEnemyStats("Medium", 100, 17 + player.level, 20, 2)
+        setEnemyStats("Medium", 250, 20 + player.level, 24, 2)
         startCombat();
     })
 
     $("#startHard").click(function() {
-        setEnemyStats("Hard", 150, 20 + player.level, 30, 3)
+        setEnemyStats("Hard", 450, 29 + player.level, 30, 3)
         startCombat();
     })
 
@@ -263,6 +265,7 @@ $(document).ready(function() {
         playerAttack();
         // Checks if enemy HP is below 0 and ends combat
         if (areYouDead(enemy.currentHp)) {
+            player.kills++;
             if (player.autoDeath) {
                 printResults("#enemyHealth", enemy.reward * 2, player)
             } else {
@@ -346,7 +349,7 @@ $(document).ready(function() {
     }
 
     function earnXp(x) {
-        let base = x * 100;
+        let base = x * 125;
         let mod = getDiceRoll(base)
         let xBase = getRange(getDiceRoll(base + 15), base + 30) + mod;
         player.xp += xBase;
@@ -362,6 +365,7 @@ $(document).ready(function() {
         $("#playerHealth").html(player.currentHp);
         $("#playerGold").html(player.gold);
         $("#playerXp").html(player.xp);
+        $("#playerKills").html(player.kills);
         $(".combat").fadeOut("slow");
         $("#enemyCrit").empty()
         $("#playerCrit").empty()
@@ -382,6 +386,9 @@ $(document).ready(function() {
                 $(".name").fadeIn("slow");
                 $("#autoDeathText").text("Turn on auto death for double or nothing!");
                 $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+                $("#enterShop").attr("disabled", false);
+                $("#enterTraining").attr("disabled", false);
+                $("#saveButton").attr("disabled", false);
             }, 1000)
             alert("Game Over!");
         }, 1500)
@@ -578,7 +585,8 @@ $(document).ready(function() {
             playerGold: player.gold,
             playerXp: player.xp,
             playerLevel: player.level,
-            playerName: player.name
+            playerName: player.name,
+            playerKills: player.kills
         };
         localStorage.setItem("save", JSON.stringify(save));
     }
@@ -597,13 +605,12 @@ $(document).ready(function() {
             player.xp = saveGame.playerXp;
             player.level = saveGame.playerLevel;
             player.name = saveGame.playerName;
-
+            player.kills = saveGame.playerKills;
         }
     }
 
     function clearSave() {
         localStorage.clear()
     }
-
 
 });

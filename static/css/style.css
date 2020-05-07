@@ -9,6 +9,10 @@
     font-weight: 400;
 }
 
+.game-bg {
+    background-color: white;
+}
+
 
 /* NavBar */
 
@@ -30,6 +34,9 @@
 .stat-nav {
     padding: 16px 8px;
 }
+
+
+/* Buttons */
 
 
 /* Conbat */
