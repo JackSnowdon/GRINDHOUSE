@@ -222,7 +222,8 @@ $(document).ready(function() {
         var hp = enemyLevel * 47;
         var spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
         var atk = getDiceRoll(enemyLevel * 10);
-        setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, enemyLevel);
+        var rew = getDiceRoll(enemyLevel)
+        setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, rew);
         startCombat();
     })
 

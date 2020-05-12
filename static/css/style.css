@@ -10,7 +10,7 @@
 }
 
 .game-bg {
-    background-color: white;
+    background-color: #ffffff;
 }
 
 
@@ -37,6 +37,35 @@
 
 
 /* Buttons */
+
+.icon-button {
+    height: 150px;
+    width: 150px;
+    transition: all 0.45s ease-in-out;
+    -moz-transition: all 0.45s ease-in-out;
+    -webkit-transition: all 0.45s ease-in-out;
+    -o-transition: all 0.45s ease-in-out;
+}
+
+.icon-button:hover {
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+#enterShop {
+    background: url(../img/shop-white.png);
+    background-size: contain;
+}
+
+#enterTraining {
+    background: url(../img/growth.png);
+    background-size: contain;
+}
+
+#leaveShop,
+#leaveTraining {
+    background: url(../img/exit-gate.png);
+    background-size: contain;
+}
 
 
 /* Conbat */
