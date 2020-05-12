@@ -12,7 +12,7 @@ $(document).ready(function() {
     player.power = 10;
     player.speed = 10;
     player.gold = 500;
-    player.xp = 0;
+    player.xp = 70000;
     player.level = 1;
     player.autoDeath = false;
     player.kills = 0;
@@ -67,6 +67,11 @@ $(document).ready(function() {
         } else {
             $("#levelSetter").show();
         }
+        if (player.level < 5) {
+            $("#counterButton").hide();
+        } else {
+            $("#counterButton").show();
+        }
     }
 
     function emptyResults() {
@@ -102,6 +107,11 @@ $(document).ready(function() {
             $("#healButton").hide();
         } else {
             $("#healButton").show();
+        }
+        if (player.level < 5) {
+            $("#counterButton").hide();
+        } else {
+            $("#counterButton").show();
         }
     }
 
@@ -400,8 +410,6 @@ $(document).ready(function() {
         }
     });
 
-
-
     // Endgame checker
 
     function areYouDead(hp) {
@@ -568,6 +576,9 @@ $(document).ready(function() {
             if (player.level === 3) {
                 alert("Unlocked Heal");
             }
+            if (player.level === 5) {
+                alert("Unlocked Counter")
+            }
             if (player.level === 20) {
                 alert("Unlocked Level Setter (Tester!)");
                 $("#levelSetter").show();
@@ -632,7 +643,6 @@ $(document).ready(function() {
                 $(".save").fadeIn("slow");
             }, 1000);
             alert("Game loaded");
-
         } else {
             alert("Game not loaded");
         }
@@ -651,9 +661,7 @@ $(document).ready(function() {
             alert("Game deleted");
         } else {
             alert("Game not deleted");
-
         }
-
     })
 
     function save() {

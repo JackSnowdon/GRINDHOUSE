@@ -86,6 +86,11 @@
     background-size: contain;
 }
 
+#counterButton {
+    background: url(../img/counter.png);
+    background-size: contain;
+}
+
 #saveButton {
     background: url(../img/save.png);
     background-size: contain;
