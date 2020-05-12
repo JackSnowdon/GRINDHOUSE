@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     // Player Object Base
 
-    var player = new Object();
+    let player = new Object();
     player.maxHp = 100;
     player.currentHp = 100;
     player.power = 10;
@@ -19,7 +19,7 @@ $(document).ready(function() {
 
     // Enemy Object Base
 
-    var enemy = new Object();
+    let enemy = new Object();
     enemy.name = "Steve";
     enemy.maxHp = 100;
     enemy.currentHp = 100;
@@ -29,7 +29,7 @@ $(document).ready(function() {
 
     $("#name-sumbit").click(function() {
         // Checks name has value (Trimmed in case of whitespace)
-        var playerName = $("#player-name").val();
+        let playerName = $("#player-name").val();
         $(".name").fadeOut("slow");
         $(".load").fadeOut("slow");
         if ($.trim(playerName) == '') {
@@ -152,18 +152,18 @@ $(document).ready(function() {
     })
 
     $("#level-sumbit").click(function() {
-        var enemyLevel = $("#enemy-level").val();
-        var hp = enemyLevel * 47;
-        var spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
-        var atk = getDiceRoll(enemyLevel * 10);
+        let enemyLevel = $("#enemy-level").val();
+        let hp = enemyLevel * 47;
+        let spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
+        let atk = getDiceRoll(enemyLevel * 10);
         if (enemyLevel > 1671230) {
-            var rew = getDiceRoll(enemyLevel / 939210)
+            let rew = getDiceRoll(enemyLevel / 939210)
         } else if (enemyLevel > 45172) {
-            var rew = getDiceRoll(enemyLevel / 39210)
+            let rew = getDiceRoll(enemyLevel / 39210)
         } else if (enemyLevel > 1540)
             var rew = getDiceRoll(enemyLevel / 910)
         else {
-            var rew = getDiceRoll(enemyLevel / 10)
+            let rew = getDiceRoll(enemyLevel / 10)
         }
         setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, rew / 3);
         startCombat();
@@ -515,7 +515,7 @@ $(document).ready(function() {
     // Die
 
     $("#rollD6").click(function() {
-        var result = getDiceRoll(6);
+        let result = getDiceRoll(6);
         $("#d6").text(result);
     });
 
@@ -630,7 +630,7 @@ $(document).ready(function() {
 
         // Confirms if player wants to save progress
 
-        var saveCheck = confirm("Saving will overwrite " + player.name + "'s save, press OK to confirm");
+        let saveCheck = confirm("Saving will overwrite " + player.name + "'s save, press OK to confirm");
         if (saveCheck == true) {
             save();
             alert("Game Saved!");
@@ -652,7 +652,7 @@ $(document).ready(function() {
 
         // Confirms player wants to load local save
 
-        var loadCheck = confirm("Load your save file? (This will overwrite your current save)");
+        let loadCheck = confirm("Load your save file? (This will overwrite your current save)");
         if (loadCheck == true) {
             load();
 
@@ -673,7 +673,7 @@ $(document).ready(function() {
     });
 
     $("#deleteButton").click(function() {
-        var deleteCheck = confirm("Delete your save file?");
+        let deleteCheck = confirm("Delete your save file?");
         if (deleteCheck == true) {
             clearSave();
             $(".buttons").fadeOut("slow");
@@ -692,7 +692,7 @@ $(document).ready(function() {
 
         // Stores player info as JSON and saves to local storage
 
-        var save = {
+        let save = {
             playerPower: player.power,
             playerMaxHp: player.maxHp,
             playerCurrentHp: player.currentHp,
@@ -710,7 +710,7 @@ $(document).ready(function() {
 
         // Retrives from local storage
 
-        var saveGame = JSON.parse(localStorage.getItem("save"));
+        let saveGame = JSON.parse(localStorage.getItem("save"));
         if (saveGame != null && saveGame != undefined) {
             player.power = saveGame.playerPower;
             player.maxHp = saveGame.playerMaxHp;
