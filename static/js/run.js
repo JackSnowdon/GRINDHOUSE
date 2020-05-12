@@ -93,6 +93,7 @@ $(document).ready(function() {
         $(".save").fadeOut("slow");
         $("#attackButton").attr("disabled", false);
         $("#healButton").attr("disabled", false);
+        $("#counterButton").attr("disabled", false);
         player.heals = healAmountChecker(player);
         setTimeout(function() {
             $(".combat").fadeIn("slow");
@@ -351,7 +352,55 @@ $(document).ready(function() {
         return final;
     }
 
-    $("#counterButton")
+    $("#counterButton").click(function() {
+        $("#counterButton").attr("disabled", true);
+        if (doesAttackHit(player, enemy)) {
+            let cBase = basicAttack(enemy.power) + basicAttack(player.power) * 2;
+            enemy.currentHp -= cBase;
+            $("#enemyHealth").html(enemy.currentHp);
+            $("#playerHitResult").html(player.name + " Fully Hits The Counter For " + cBase + " Hit Points! " + enemy.name + " Is Down, Take A Free Hit");
+            if (areYouDead(enemy.currentHp)) {
+                player.kills++;
+                if (player.autoDeath) {
+                    printResults("#enemyHealth", enemy.reward * 2, player)
+                } else {
+                    printResults("#enemyHealth", enemy.reward, player)
+                }
+                return;
+            }
+        } else if (doesAttackHit(enemy, player)) {
+            let cBase = basicAttack(enemy.power) + basicAttack(player.power);
+            enemy.currentHp -= cBase;
+            $("#enemyHealth").html(enemy.currentHp);
+            $("#playerHitResult").html(player.name + " Just Hits The Counter For " + cBase + " Hit Points!");
+            if (areYouDead(enemy.currentHp)) {
+                player.kills++;
+                if (player.autoDeath) {
+                    printResults("#enemyHealth", enemy.reward * 2, player)
+                } else {
+                    printResults("#enemyHealth", enemy.reward, player)
+                }
+                return;
+            } else {
+                setTimeout(function() {
+                    enemyAttack();
+                    if (areYouDead(player.currentHp)) {
+                        if (player.autoDeath === false) {
+                            $("#attackButton").attr("disabled", true);
+                            printResults("#playerHealth", enemy.reward / 2, enemy)
+                        } else {
+                            resetAutoDeath()
+                        }
+                        return;
+                    }
+                }, 1000);
+            }
+        } else {
+            $("#playerHitResult").html(player.name + " Misses The Counter!");
+        }
+    });
+
+
 
     // Endgame checker
 
