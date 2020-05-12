@@ -40,6 +40,7 @@ $(document).ready(function() {
             player.name = playerName;
         }
         if (typeof player.name !== "undefined") {
+            alert('The stange voice crackles, "Welcome To The Grindhouse"')
             setPlayerStats();
             setTimeout(function() {
                 $(".save").fadeIn("slow");
