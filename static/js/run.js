@@ -12,7 +12,7 @@ $(document).ready(function() {
     player.power = 10;
     player.speed = 10;
     player.gold = 500;
-    player.xp = 500;
+    player.xp = 0;
     player.level = 1;
     player.autoDeath = false;
     player.kills = 0;
@@ -61,6 +61,11 @@ $(document).ready(function() {
         $("#playerLevel").text(player.level);
         $("#playerKills").text(player.kills);
         player.autoDeath = false;
+        if (player.level < 20) {
+            $("#levelSetter").hide();
+        } else {
+            $("#levelSetter").show();
+        }
     }
 
     function emptyResults() {
@@ -221,14 +226,16 @@ $(document).ready(function() {
         var hp = enemyLevel * 47;
         var spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
         var atk = getDiceRoll(enemyLevel * 10);
-        if (getDiceRoll(enemyLevel) > 45172) {
+        if (enemyLevel > 1671230) {
+            var rew = getDiceRoll(enemyLevel / 939210)
+        } else if (enemyLevel > 45172) {
             var rew = getDiceRoll(enemyLevel / 39210)
         } else if (enemyLevel > 1540)
             var rew = getDiceRoll(enemyLevel / 910)
         else {
             var rew = getDiceRoll(enemyLevel / 10)
         }
-        setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, rew);
+        setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, rew / 3);
         startCombat();
     })
 
@@ -504,6 +511,10 @@ $(document).ready(function() {
             alert("Leveled Up!");
             if (player.level === 3) {
                 alert("Unlocked Heal");
+            }
+            if (player.level === 20) {
+                alert("Unlocked Level Setter (Tester!)");
+                $("#levelSetter").show();
             }
         } else {
             alert("You dont have enough XP! You need " + levelAmount + "xp to Level Up!");
