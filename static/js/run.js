@@ -197,28 +197,28 @@ $(document).ready(function() {
         enemy.name = name;
         enemy.maxHp = setEnemyHealth(maxhp);
         enemy.currentHp = enemy.maxHp;
-        enemy.speed = speed;
-        enemy.power = power;
+        enemy.speed = speed + player.level;
+        enemy.power = power + player.kills;
         enemy.reward = reward;
     }
 
     $("#startEasy").click(function() {
-        setEnemyStats("Easy", 50, 15 + player.level, 10, 1)
+        setEnemyStats("Easy", 50, 15, 10, 1)
         startCombat();
     })
 
     $("#startMedium").click(function() {
-        setEnemyStats("Medium", 250, 20 + player.level, 24, 2)
+        setEnemyStats("Medium", 250, 20, 24, 2)
         startCombat();
     })
 
     $("#startHard").click(function() {
-        setEnemyStats("Hard", 450, 29 + player.level, 30, 3)
+        setEnemyStats("Hard", 450, 29, 30, 3)
         startCombat();
     })
 
     $("#startBoss").click(function() {
-        setEnemyStats("Omza", 25000, 100 + player.level, 100, 5)
+        setEnemyStats("Omza", 25000, 100, 100, 5)
         startCombat();
     })
 
@@ -248,6 +248,7 @@ $(document).ready(function() {
             $("#enterShop").attr("disabled", false);
             $("#enterTraining").attr("disabled", false);
             $("#saveButton").attr("disabled", false);
+            $("#deleteButton").attr("disabled", false);
             autoDeathDebuff(player);
         } else {
             player.autoDeath = true;
@@ -256,6 +257,7 @@ $(document).ready(function() {
             $("#enterShop").attr("disabled", true);
             $("#enterTraining").attr("disabled", true);
             $("#saveButton").attr("disabled", true);
+            $("#deleteButton").attr("disabled", true);
             autoDeathBuff(player);
         }
     })
