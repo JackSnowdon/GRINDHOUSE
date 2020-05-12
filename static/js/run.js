@@ -77,6 +77,12 @@ $(document).ready(function() {
         $("#xpResult").empty();
     }
 
+    // Start Combat
+
+    function healAmountChecker(user) {
+        return Math.floor(user.level / 3);
+    }
+
     function startCombat() {
         emptyResults()
         $("#hitresults").show();
@@ -95,94 +101,6 @@ $(document).ready(function() {
             $("#healButton").hide();
         } else {
             $("#healButton").show();
-        }
-    }
-
-    // Combat Functions
-
-    // getDieRoll takes amount of "sides" as a parameter
-
-    function getDiceRoll(x) {
-        return Math.floor(Math.random() * x) + 1;
-    }
-
-    function getRange(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    function attack(base, power) {
-        return base + power;
-    }
-
-    function basicAttack(p) {
-        let baseDmg = getDiceRoll(p);
-        let modDmg = getDiceRoll(baseDmg) * 2;
-        let aDmg = attack(baseDmg, modDmg);
-        return aDmg
-    }
-
-    function doesAttackHit(a, d) {
-        let aSpeed = (getDiceRoll(a.speed) + a.speed)
-        let dSpeed = (getDiceRoll(d.speed) + getDiceRoll(d.speed))
-        if (aSpeed >= dSpeed) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function healAmountChecker(user) {
-        return Math.floor(user.level / 3);
-    }
-
-    function playerAttack() {
-        // Empties Crit and disables attack button
-
-        $("#attackButton").attr("disabled", true);
-        $("#enemyCrit").empty()
-
-        // Check To Hit
-
-        if (doesAttackHit(player, enemy)) {
-
-            // Check for Crit
-
-            if (getDiceRoll(100) > 90) {
-                $("#playerCrit").show().text("Crit!").css("color", "red");
-                attackDmg = basicAttack(enemy.power) * 5;
-            } else {
-                attackDmg = basicAttack(enemy.power);
-            }
-
-            // Reduces enemy health and displays results
-
-            enemy.currentHp -= attackDmg;
-            $("#playerHitResult").html(player.name + " Hits " + enemy.name + " for " + attackDmg + " Hit Points!");
-            $("#enemyHealth").html(enemy.currentHp);
-        } else {
-            $("#playerHitResult").html(player.name + " Misses " + enemy.name);
-        }
-    }
-
-    function enemyAttack() {
-        $("#playerCrit").empty()
-        if (doesAttackHit(enemy, player)) {
-            if (getDiceRoll(100) > 90) {
-                $("#enemyCrit").show().text("Crit!").css("color", "red");
-                eAttackDmg = basicAttack(enemy.power) * 5;
-            } else {
-                eAttackDmg = basicAttack(enemy.power);
-            }
-            player.currentHp -= eAttackDmg;
-            $("#enemyHitResult").html(enemy.name + " Hits " + player.name + " for " + eAttackDmg + " Hit Points!");
-            $("#playerHealth").text(player.currentHp);
-        } else {
-            $("#enemyHitResult").html(enemy.name + " Misses " + player.name);
-        }
-        $("#attackButton").attr("disabled", false);
-        while (player.heals > 0) {
-            $("#healButton").attr("disabled", false);
-            return;
         }
     }
 
@@ -285,7 +203,91 @@ $(document).ready(function() {
         $("#playerSpeed").text(player.speed);
     }
 
+    // Combat Functions
+
+    // getDieRoll takes amount of "sides" as a parameter
+
+    function getDiceRoll(x) {
+        return Math.floor(Math.random() * x) + 1;
+    }
+
+    function getRange(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    function attack(base, power) {
+        return base + power;
+    }
+
+    function basicAttack(p) {
+        let baseDmg = getDiceRoll(p);
+        let modDmg = getDiceRoll(baseDmg) * 2;
+        let aDmg = attack(baseDmg, modDmg);
+        return aDmg
+    }
+
+    function doesAttackHit(a, d) {
+        let aSpeed = (getDiceRoll(a.speed) + a.speed)
+        let dSpeed = (getDiceRoll(d.speed) + getDiceRoll(d.speed))
+        if (aSpeed >= dSpeed) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Player Attack
+
+    function playerAttack() {
+        // Empties Crit and disables attack button
+
+        $("#attackButton").attr("disabled", true);
+        $("#enemyCrit").empty()
+
+        // Check To Hit
+
+        if (doesAttackHit(player, enemy)) {
+
+            // Check for Crit
+
+            if (getDiceRoll(100) > 90) {
+                $("#playerCrit").show().text("Crit!").css("color", "red");
+                attackDmg = basicAttack(player.power) * 5;
+            } else {
+                attackDmg = basicAttack(player.power);
+            }
+
+            // Reduces enemy health and displays results
+
+            enemy.currentHp -= attackDmg;
+            $("#playerHitResult").html(player.name + " Hits " + enemy.name + " for " + attackDmg + " Hit Points!");
+            $("#enemyHealth").html(enemy.currentHp);
+        } else {
+            $("#playerHitResult").html(player.name + " Misses " + enemy.name);
+        }
+    }
+
+    function enemyAttack() {
+        $("#playerCrit").empty()
+        if (doesAttackHit(enemy, player)) {
+            if (getDiceRoll(100) > 90) {
+                $("#enemyCrit").show().text("Crit!").css("color", "red");
+                eAttackDmg = basicAttack(enemy.power) * 5;
+            } else {
+                eAttackDmg = basicAttack(enemy.power);
+            }
+            player.currentHp -= eAttackDmg;
+            $("#enemyHitResult").html(enemy.name + " Hits " + player.name + " for " + eAttackDmg + " Hit Points!");
+            $("#playerHealth").text(player.currentHp);
+        } else {
+            $("#enemyHitResult").html(enemy.name + " Misses " + player.name);
+        }
+        $("#attackButton").attr("disabled", false);
+        while (player.heals > 0) {
+            $("#healButton").attr("disabled", false);
+            return;
+        }
+    }
 
     $("#attackButton").click(function() {
         playerAttack();
@@ -348,6 +350,8 @@ $(document).ready(function() {
         let final = Math.floor(getDiceRoll(base) + base);
         return final;
     }
+
+    $("#counterButton")
 
     // Endgame checker
 
