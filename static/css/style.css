@@ -11,6 +11,7 @@
 
 .game-bg {
     background-color: #ffffff;
+    color: #000000;
 }
 
 
@@ -41,6 +42,8 @@
 .icon-button {
     height: 150px;
     width: 150px;
+    padding: 0;
+    border: 0;
     transition: all 0.45s ease-in-out;
     -moz-transition: all 0.45s ease-in-out;
     -webkit-transition: all 0.45s ease-in-out;
@@ -49,6 +52,11 @@
 
 .icon-button:hover {
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.19);
+}
+
+.admin-buttons {
+    height: 75px;
+    width: 75px;
 }
 
 #enterShop {
@@ -64,6 +72,56 @@
 #leaveShop,
 #leaveTraining {
     background: url(../img/exit-gate.png);
+    background-size: contain;
+}
+
+#attackButton {
+    background: url(../img/attack.png);
+    background-size: contain;
+}
+
+#healButton {
+    background: url(../img/heal.png);
+    background-size: contain;
+}
+
+#saveButton {
+    background: url(../img/save.png);
+    background-size: contain;
+}
+
+#loadButton {
+    background: url(../img/load.png);
+    background-size: contain;
+}
+
+#deleteButton {
+    background: url(../img/delete.png);
+    background-size: contain;
+}
+
+#autoDeathButton {
+    background: url(../img/autodeath.png);
+    background-size: contain;
+}
+
+#saveButton {
+    background: url(../img/save.png);
+    background-size: contain;
+}
+
+#buyPower {
+    background: url(../img/attackup.png);
+    background-size: contain;
+}
+
+#buySpeed {
+    background: url(../img/speedup.png);
+    background-size: contain;
+}
+
+#buyLevel {
+    background: url(../img/levelup.png);
     background-size: contain;
 }
 

@@ -218,11 +218,16 @@ $(document).ready(function() {
 
     $("#level-sumbit").click(function() {
         var enemyLevel = $("#enemy-level").val();
-        console.log(enemyLevel);
         var hp = enemyLevel * 47;
         var spd = getRange(enemyLevel / 3, getDiceRoll(hp / 2));
         var atk = getDiceRoll(enemyLevel * 10);
-        var rew = getDiceRoll(enemyLevel)
+        if (getDiceRoll(enemyLevel) > 45172) {
+            var rew = getDiceRoll(enemyLevel / 39210)
+        } else if (enemyLevel > 1540)
+            var rew = getDiceRoll(enemyLevel / 910)
+        else {
+            var rew = getDiceRoll(enemyLevel / 10)
+        }
         setEnemyStats("LEVEL " + enemyLevel, hp, spd, atk, rew);
         startCombat();
     })
@@ -231,15 +236,15 @@ $(document).ready(function() {
         if (player.autoDeath) {
             player.autoDeath = false;
             $("#autoDeathText").text("Turn on auto death for double or nothing!");
-            $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+            $(".game-bg").css({ "background-color": "#ffffff", "color": "#000000" });
             $("#enterShop").attr("disabled", false);
             $("#enterTraining").attr("disabled", false);
             $("#saveButton").attr("disabled", false);
             autoDeathDebuff(player);
         } else {
             player.autoDeath = true;
-            $("#autoDeathText").text("Turn off auto death for double or nothing!");
-            $("#autoDeathButton").removeClass("btn-success").addClass("btn-danger");
+            $("#autoDeathText").text("Turn off auto death");
+            $(".game-bg").css({ "background-color": "#000000", "color": "red" });
             $("#enterShop").attr("disabled", true);
             $("#enterTraining").attr("disabled", true);
             $("#saveButton").attr("disabled", true);
@@ -396,7 +401,7 @@ $(document).ready(function() {
             setTimeout(function() {
                 $(".name").fadeIn("slow");
                 $("#autoDeathText").text("Turn on auto death for double or nothing!");
-                $("#autoDeathButton").removeClass("btn-danger").addClass("btn-success");
+                $(".game-bg").css({ "background-color": "#ffffff", "color": "#000000" });
                 $("#enterShop").attr("disabled", false);
                 $("#enterTraining").attr("disabled", false);
                 $("#saveButton").attr("disabled", false);
