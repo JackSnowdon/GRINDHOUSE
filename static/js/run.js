@@ -12,7 +12,7 @@ $(document).ready(function() {
     player.power = 10;
     player.speed = 10;
     player.gold = 500;
-    player.xp = 70000;
+    player.xp = 0;
     player.level = 1;
     player.autoDeath = false;
     player.kills = 0;
@@ -364,7 +364,7 @@ $(document).ready(function() {
 
     $("#counterButton").click(function() {
         $("#counterButton").attr("disabled", true);
-        if (doesAttackHit(player, enemy)) {
+        if (doesAttackHit(player, enemy) === false) {
             let cBase = basicAttack(enemy.power) + basicAttack(player.power) * 2;
             enemy.currentHp -= cBase;
             $("#enemyHealth").html(enemy.currentHp);
@@ -407,6 +407,30 @@ $(document).ready(function() {
             }
         } else {
             $("#playerHitResult").html(player.name + " Misses The Counter!");
+            setTimeout(function() {
+                enemyAttack();
+                if (areYouDead(player.currentHp)) {
+                    if (player.autoDeath === false) {
+                        $("#attackButton").attr("disabled", true);
+                        printResults("#playerHealth", enemy.reward / 2, enemy)
+                    } else {
+                        resetAutoDeath()
+                    }
+                    return;
+                }
+                setTimeout(function() {
+                    enemyAttack();
+                    if (areYouDead(player.currentHp)) {
+                        if (player.autoDeath === false) {
+                            $("#attackButton").attr("disabled", true);
+                            printResults("#playerHealth", enemy.reward / 2, enemy)
+                        } else {
+                            resetAutoDeath()
+                        }
+                        return;
+                    }
+                }, 1500)
+            }, 1000);
         }
     });
 
