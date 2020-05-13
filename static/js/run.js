@@ -503,13 +503,6 @@ $(document).ready(function() {
             }, 1000)
             alert("Game Over!");
         }, 1500)
-        player.maxHp = 100;
-        player.currentHp = 100;
-        player.power = 10;
-        player.speed = 10;
-        player.gold = 500;
-        player.xp = 500;
-        player.level = 1;
     }
 
     // Die
@@ -726,6 +719,15 @@ $(document).ready(function() {
 
     function clearSave() {
         localStorage.clear()
+        player.maxHp = 100;
+        player.currentHp = 100;
+        player.power = 10;
+        player.speed = 10;
+        player.gold = 500;
+        player.xp = 0;
+        player.level = 1;
+        player.autoDeath = false;
+        player.kills = 0;
     }
 
 });
